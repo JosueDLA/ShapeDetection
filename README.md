@@ -1,0 +1,1 @@
+# Square detection with OpenCV
