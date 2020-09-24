@@ -41,7 +41,7 @@ def get_angle(A, B, C):
     return angle
 
 
-def remove_parent_contour:
+def remove_parent_contour(contours, hierarchy):
     """
     Remove all contours with childs
     """
@@ -57,7 +57,7 @@ def remove_parent_contour:
     return newContour, newHierarchy
 
 
-def is_square:
+def is_square(approx, boxThreshold=0.40):
     """
     Find the aspect ratio of the box
     Compare the asperct ratio of the box to a square with a threshold
