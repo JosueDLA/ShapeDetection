@@ -5,3 +5,12 @@ __pycache__/
 
 # Test Folder
 test
+
+# Video Folder / Files
+video
+*.mp4
+*.avi
+
+
+# Image Folder
+image

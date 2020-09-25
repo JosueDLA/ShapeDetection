@@ -1,3 +1,6 @@
+import numpy as np
+
+
 class shape_contour:
     def __init__(self, contours, hierarchy):
         self.contours = contours

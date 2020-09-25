@@ -58,17 +58,17 @@ def line_approximation(square, line_threshold=0.30):
     Compare the size of 4 lines to check if they are the same length
     """
 
-    average = (square.get_line_ab + square.get_line_bc +
-               square.get_line_cd + square.get_line_ad)/4
+    average = (square.get_line_ab() + square.get_line_bc() +
+               square.get_line_cd() + square.get_line_ad())/4
 
     flag1 = shape.value_approximation(
-        square.get_line_ab, average, value_threshold=line_threshold)
+        square.get_line_ab(), average, value_threshold=line_threshold)
     flag2 = shape.value_approximation(
-        square.get_line_bc, average, value_threshold=line_threshold)
+        square.get_line_bc(), average, value_threshold=line_threshold)
     flag3 = shape.value_approximation(
-        square.get_line_cd, average, value_threshold=line_threshold)
+        square.get_line_cd(), average, value_threshold=line_threshold)
     flag4 = shape.value_approximation(
-        square.get_line_ad, average, value_threshold=line_threshold)
+        square.get_line_ad(), average, value_threshold=line_threshold)
 
     if(flag1 and flag2 and flag3 and flag4):
         return True
@@ -76,18 +76,21 @@ def line_approximation(square, line_threshold=0.30):
         return False
 
 
-def angle_approximation(square, , angle_threshold=0.20):
+def angle_approximation(square, angle_threshold=0.20):
     """
     Get the four angles of a square and check if they are roughly the same
     """
-    flag1 = value_approximation(
-        square.get_angle_a, RIGHT_ANGLE, value_threshold=angle_threshold)
-    flag2 = value_approximation(
-        square.get_angle_b, RIGHT_ANGLE, value_threshold=angle_threshold)
-    flag3 = value_approximation(
-        square.get_angle_c, RIGHT_ANGLE, value_threshold=angle_threshold)
-    flag4 = value_approximation(
-        square.get_angle_d, RIGHT_ANGLE, value_threshold=angle_threshold)
+
+    print(square.get_angle_a(), RIGHT_ANGLE)
+
+    flag1 = shape.value_approximation(
+        square.get_angle_a(), RIGHT_ANGLE, value_threshold=angle_threshold)
+    flag2 = shape.value_approximation(
+        square.get_angle_b(), RIGHT_ANGLE, value_threshold=angle_threshold)
+    flag3 = shape.value_approximation(
+        square.get_angle_c(), RIGHT_ANGLE, value_threshold=angle_threshold)
+    flag4 = shape.value_approximation(
+        square.get_angle_d(), RIGHT_ANGLE, value_threshold=angle_threshold)
 
     if(flag1 and flag2 and flag3 and flag4):
         return True
@@ -113,13 +116,13 @@ def is_square(contour, arc_threshold=0.05, min_area=300):
     """
 
     perimeter = cv2.arcLength(contour, True)
-    approximation = cv2.approxPolyDP(contour, arc_threshold*peri, True)
+    approximation = cv2.approxPolyDP(contour, arc_threshold*perimeter, True)
 
-    rect = cv2.minAreaRect(approx)
+    rect = cv2.minAreaRect(approximation)
     box = cv2.boxPoints(rect)
     box = np.int0(box)
 
-    if len(approximation != 4):
+    if (len(approximation) != 4):
         return False
     if not size_approximation(approximation):
         return False
@@ -127,11 +130,20 @@ def is_square(contour, arc_threshold=0.05, min_area=300):
         return False
 
     # Sort corner of square
-    corners = [tuple(approx[0][0]), tuple(approx[1][0]),
-               tuple(approx[2][0]), tuple(approx[3][0])]
-    square.sort(key=lambda x: x[0] + (x[1]/2))
+    print(type(approximation))
+    corners = [tuple(approximation[0][0]), tuple(approximation[1][0]),
+               tuple(approximation[2][0]), tuple(approximation[3][0])]
+    corners.sort(key=lambda x: x[0] + (x[1]/2))
 
-    square = Square(corners[0], corners[1], corners[2], corners[3])
+    # Sort returns square BDAC
+    point_a = shape.Point(corners[1][0], corners[1][1])
+    point_b = shape.Point(corners[3][0], corners[3][1])
+    point_c = shape.Point(corners[2][0], corners[2][1])
+    point_d = shape.Point(corners[0][0], corners[0][1])
+
+    square = Square(point_a, point_b, point_c, point_d)
+
+    print(square)
 
     if True:
         # Is Horizontal
