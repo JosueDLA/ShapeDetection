@@ -22,11 +22,11 @@ def get_distance(point_A: Point, point_B: Point):
     return distance
 
 
-def position_approximation(point_a, point_b, position_threshold=0.30):
+def value_approximation(point_a, point_b, value_threshold):
     """
-    Compare positions of two points to check if they are orizontal or vertical lines
+    Compare two numbers to check if they are roughly the same
     """
-    position = a/float(b)
+    position = point_a/float(point_b)
     flag = True if position >= (
         1-position_threshold) and position <= (1+position_threshold) else False
     return flag
