@@ -1,1 +1,1 @@
-# Square detection with OpenCV
+# Shape detection with OpenCV

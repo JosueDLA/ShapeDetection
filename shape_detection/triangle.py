@@ -2,7 +2,7 @@ from .shape import Point, get_distance
 import math
 
 
-class Triange:
+class Triangle:
     def __init__(self, point_a: Point, point_b: Point, point_c: Point):
         self.point_a = point_a
         self.point_b = point_b
@@ -11,13 +11,13 @@ class Triange:
     def __str__(self):
         return (f"{self.point_a} {self.point_b} {self.point_c}")
 
-    def get_angle_A(self):
+    def get_angle_a(self):
         return get_angle(self.point_a, self.point_b, self.point_c)
 
-    def get_angle_B(self):
+    def get_angle_b(self):
         return get_angle(self.point_b, self.point_c, self.point_a)
 
-    def get_angle_C(self):
+    def get_angle_c(self):
         return get_angle(self.point_c, self.point_a, self.point_b)
 
     def get_side_a(self):
@@ -50,7 +50,7 @@ def get_angle(point_a: Point, point_b: Point, point_c: Point):
     """
     a = get_distance(point_b, point_c)
     b = get_distance(point_a, point_c)
-    c = get_distance(point_a, point_b)
+    c = get_distance(point_b, point_a)
 
     cosA = (math.pow(b, 2) + (math.pow(c, 2)) - (math.pow(a, 2))) / (2*b*c)
     angle = math.degrees(math.acos(cosA))

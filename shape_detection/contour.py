@@ -1,9 +1,10 @@
 class shape_contour:
     def __init__(self, contours, hierarchy):
-        pass
+        self.contours = contours
+        self.hierarchy = hierarchy[0]
 
     def __str__(self):
-        pass
+        return self.contours, self.hierarchy
 
 
 def remove_parent_contour(contours, hierarchy):
