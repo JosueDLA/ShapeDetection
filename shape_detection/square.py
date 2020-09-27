@@ -81,8 +81,6 @@ def angle_approximation(square, angle_threshold=0.20):
     Get the four angles of a square and check if they are roughly the same
     """
 
-    print(square.get_angle_a(), RIGHT_ANGLE)
-
     flag1 = shape.value_approximation(
         square.get_angle_a(), RIGHT_ANGLE, value_threshold=angle_threshold)
     flag2 = shape.value_approximation(
@@ -130,20 +128,30 @@ def is_square(contour, arc_threshold=0.05, min_area=300):
         return False
 
     # Sort corner of square
-    print(type(approximation))
     corners = [tuple(approximation[0][0]), tuple(approximation[1][0]),
                tuple(approximation[2][0]), tuple(approximation[3][0])]
-    corners.sort(key=lambda x: x[0] + (x[1]/2))
+    corners.sort(key=lambda p: p[1])
 
-    # Sort returns square BDAC
-    point_a = shape.Point(corners[1][0], corners[1][1])
-    point_b = shape.Point(corners[3][0], corners[3][1])
+    top_points = corners[2:]
+    buttom_points = corners[:2]
+
+    top_points.sort(key=lambda p: p[0])
+    buttom_points.sort(key=lambda p: p[0], reverse=True)
+
+    corners = top_points + buttom_points
+
+    point_a = shape.Point(corners[0][0], corners[0][1])
+    point_b = shape.Point(corners[1][0], corners[1][1])
     point_c = shape.Point(corners[2][0], corners[2][1])
-    point_d = shape.Point(corners[0][0], corners[0][1])
+    point_d = shape.Point(corners[3][0], corners[3][1])
+
+    print("Corners:", corners)
+    print("top", top_points)
+    print("buttom", buttom_points)
 
     square = Square(point_a, point_b, point_c, point_d)
 
-    print(square)
+    print("Square:", square)
 
     if True:
         # Is Horizontal
