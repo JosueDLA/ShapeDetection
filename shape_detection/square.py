@@ -148,12 +148,11 @@ def is_square(contour, arc_threshold=0.05, min_area=300):
     point_c = shape.Point(corners[2][0], corners[2][1])
     point_d = shape.Point(corners[3][0], corners[3][1])
 
+    square = Square(point_a, point_b, point_c, point_d)
+
     # print("Corners:", corners)
     # print("top", top_points)
     # print("buttom", buttom_points)
-
-    square = Square(point_a, point_b, point_c, point_d)
-
     # print("Square:", square)
 
     if not shape.value_approximation(square.get_line_ab(), square.get_line_cd(), value_threshold=0.20):
