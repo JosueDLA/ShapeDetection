@@ -121,10 +121,13 @@ def is_square(contour, arc_threshold=0.05, min_area=300):
     box = np.int0(box)
 
     if (len(approximation) != 4):
+        # Poligon has 4 courners
         return False
     if not size_approximation(approximation):
+        # Size Approximation
         return False
     if cv2.contourArea(approximation) < min_area:
+        # Min Area
         return False
 
     # Sort corner of square
@@ -145,20 +148,20 @@ def is_square(contour, arc_threshold=0.05, min_area=300):
     point_c = shape.Point(corners[2][0], corners[2][1])
     point_d = shape.Point(corners[3][0], corners[3][1])
 
-    print("Corners:", corners)
-    print("top", top_points)
-    print("buttom", buttom_points)
+    # print("Corners:", corners)
+    # print("top", top_points)
+    # print("buttom", buttom_points)
 
     square = Square(point_a, point_b, point_c, point_d)
 
-    print("Square:", square)
+    # print("Square:", square)
 
-    if True:
+    if not shape.value_approximation(square.get_line_ab(), square.get_line_cd(), value_threshold=0.20):
         # Is Horizontal
-        pass
-    if True:
+        return False
+    if not shape.value_approximation(square.get_line_ad(), square.get_line_bc(), value_threshold=0.20):
         # Is Vertical
-        pass
+        return False
     if not line_approximation(square):
         # Lines Same Length
         return False
