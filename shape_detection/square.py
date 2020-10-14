@@ -1,5 +1,5 @@
 from .triangle import get_angle, Point
-from . import contour, shape
+from . import shape
 import numpy as np
 import cv2
 
