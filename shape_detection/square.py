@@ -7,11 +7,12 @@ RIGHT_ANGLE = 90
 
 
 class Square:
-    def __init__(self, point_a: Point, point_b: Point, point_c: Point, point_d: Point):
+    def __init__(self, point_a: Point, point_b: Point, point_c: Point, point_d: Point, array: np.ndarray = []):
         self.point_a = point_a
         self.point_b = point_b
         self.point_c = point_c
         self.point_d = point_d
+        self.array = array
 
     def __str__(self):
         return (f"{self.point_a} {self.point_b} {self.point_c} {self.point_d}")
@@ -148,7 +149,7 @@ def is_square(contour, arc_threshold=0.05, min_area=300):
     point_c = shape.Point(corners[2][0], corners[2][1])
     point_d = shape.Point(corners[3][0], corners[3][1])
 
-    square = Square(point_a, point_b, point_c, point_d)
+    square = Square(point_a, point_b, point_c, point_d, approximation)
 
     # print("Corners:", corners)
     # print("top", top_points)
@@ -168,4 +169,4 @@ def is_square(contour, arc_threshold=0.05, min_area=300):
         # Right Angle
         return False
 
-    return True
+    return square
