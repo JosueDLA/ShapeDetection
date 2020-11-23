@@ -1,10 +1,21 @@
 import math
 
 
-class Point:
+class Point(tuple):
+    def __new__(cls, x: int, y: int):
+        return tuple.__new__(cls, (x, y))
+
     def __init__(self, x: int, y: int):
-        self.x = x
-        self.y = y
+        self._x = x
+        self._y = y
+
+    @property
+    def x(self):
+        return self._x
+
+    @property
+    def y(self):
+        return self._y
 
     def __str__(self):
         return(f"({self.x}, {self.y})")
