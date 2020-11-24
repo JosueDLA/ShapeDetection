@@ -1,4 +1,4 @@
-from .triangle import get_angle, Point
+from .triangle import Triangle
 from . import shape
 import numpy as np
 import cv2
@@ -25,186 +25,195 @@ class Square:
     def __str__(self):
         return (f"{self.point_a} {self.point_b} {self.point_c} {self.point_d}")
 
-    def get_angle_a(self):
+    @property
+    def angle_a(self):
         """Angle A°."""
-        return get_angle(self.point_a, self.point_b, self.point_d)
+        return Triangle.get_angle(self.point_a, self.point_b, self.point_d)
 
-    def get_angle_b(self):
+    @property
+    def angle_b(self):
         """Angle B°."""
-        return get_angle(self.point_b, self.point_c, self.point_a)
+        return Triangle.get_angle(self.point_b, self.point_c, self.point_a)
 
-    def get_angle_c(self):
+    @property
+    def angle_c(self):
         """Angle C°."""
-        return get_angle(self.point_c, self.point_d, self.point_b)
+        return Triangle.get_angle(self.point_c, self.point_d, self.point_b)
 
-    def get_angle_d(self):
+    @property
+    def angle_d(self):
         """Angle D°."""
-        return get_angle(self.point_d, self.point_a, self.point_c)
+        return Triangle.get_angle(self.point_d, self.point_a, self.point_c)
 
-    def get_line_ab(self):
+    @property
+    def line_ab(self):
         """Line AB length."""
         return shape.get_distance(self.point_a, self.point_b)
 
-    def get_line_bc(self):
+    @property
+    def line_bc(self):
         """Line BC length."""
         return shape.get_distance(self.point_b, self.point_c)
 
-    def get_line_cd(self):
+    @property
+    def line_cd(self):
         """Line CD length."""
         return shape.get_distance(self.point_c, self.point_d)
 
-    def get_line_ad(self):
+    @property
+    def line_ad(self):
         """Line AD length."""
         return shape.get_distance(self.point_a, self.point_d)
 
+    @staticmethod
+    def size_approximation(contour, box_threshold=0.40):
+        """Compare the size of a bound contour to the contour.
 
-def size_approximation(contour, box_threshold=0.40):
-    """Compare the size of a bound contour to the contour.
+        Args:
+            contour (np.ndarray): OpenCV contour.
+            box_threshold (float, optional): Approximation threshold. 
 
-    Args:
-        contour (np.ndarray): OpenCV contour.
-        box_threshold (float, optional): Approximation threshold. 
+        Returns: 
+            bool: Whether or not the contours are the same size.
 
-    Returns: 
-        bool: Whether or not the contours are the same size.
+        Notes: See https://www.pyimagesearch.com/2016/02/08/opencv-shape-detection/ for  more info.
+        """
+        (_, _, w, h) = cv2.boundingRect(contour)
+        area = w / float(h)
+        flag = True if area >= (
+            1 - box_threshold) and area <= (1+box_threshold) else False
+        return flag
 
-    Notes: See https://www.pyimagesearch.com/2016/02/08/opencv-shape-detection/ for  more info.
-    """
-    (_, _, w, h) = cv2.boundingRect(contour)
-    area = w / float(h)
-    flag = True if area >= (
-        1 - box_threshold) and area <= (1+box_threshold) else False
-    return flag
+    @staticmethod
+    def line_approximation(square: Square, line_threshold: float = 0.30):
+        """Compare the size of 4 lines to check if they are the same length.
 
+        Args:
+            square (Square): Square object.
+            line_threshold (float, optional): Approximation threshold. 
 
-def line_approximation(square: Square, line_threshold: float = 0.30):
-    """Compare the size of 4 lines to check if they are the same length.
+        Returns:
+            bool: Whether or not the lines are the same length.
+        """
 
-    Args:
-        square (Square): Square object.
-        line_threshold (float, optional): Approximation threshold. 
+        average = (square.get_line_ab() + square.get_line_bc() +
+                   square.get_line_cd() + square.get_line_ad())/4
 
-    Returns:
-        bool: Whether or not the lines are the same length.
-    """
+        flag1 = shape.value_approximation(
+            square.get_line_ab(), average, value_threshold=line_threshold)
+        flag2 = shape.value_approximation(
+            square.get_line_bc(), average, value_threshold=line_threshold)
+        flag3 = shape.value_approximation(
+            square.get_line_cd(), average, value_threshold=line_threshold)
+        flag4 = shape.value_approximation(
+            square.get_line_ad(), average, value_threshold=line_threshold)
 
-    average = (square.get_line_ab() + square.get_line_bc() +
-               square.get_line_cd() + square.get_line_ad())/4
+        if(flag1 and flag2 and flag3 and flag4):
+            return True
+        else:
+            return False
 
-    flag1 = shape.value_approximation(
-        square.get_line_ab(), average, value_threshold=line_threshold)
-    flag2 = shape.value_approximation(
-        square.get_line_bc(), average, value_threshold=line_threshold)
-    flag3 = shape.value_approximation(
-        square.get_line_cd(), average, value_threshold=line_threshold)
-    flag4 = shape.value_approximation(
-        square.get_line_ad(), average, value_threshold=line_threshold)
+    @staticmethod
+    def angle_approximation(square: Square, angle_threshold: float = 0.20):
+        """ Get the four angles of a square and check if they are roughly the same.
 
-    if(flag1 and flag2 and flag3 and flag4):
-        return True
-    else:
-        return False
+        Args:
+            square (Square): Square object.
+            angle_threshold (float, optional): Approximation threshold. 
 
+        Returns:
+            bool: Whether or not the angles are the same.
+        """
 
-def angle_approximation(square: Square, angle_threshold: float = 0.20):
-    """ Get the four angles of a square and check if they are roughly the same.
+        flag1 = shape.value_approximation(
+            square.get_angle_a(), RIGHT_ANGLE, value_threshold=angle_threshold)
+        flag2 = shape.value_approximation(
+            square.get_angle_b(), RIGHT_ANGLE, value_threshold=angle_threshold)
+        flag3 = shape.value_approximation(
+            square.get_angle_c(), RIGHT_ANGLE, value_threshold=angle_threshold)
+        flag4 = shape.value_approximation(
+            square.get_angle_d(), RIGHT_ANGLE, value_threshold=angle_threshold)
 
-    Args:
-        square (Square): Square object.
-        angle_threshold (float, optional): Approximation threshold. 
+        if(flag1 and flag2 and flag3 and flag4):
+            return True
+        else:
+            return False
 
-    Returns:
-        bool: Whether or not the angles are the same.
-    """
+    @staticmethod
+    def is_square(contour, arc_threshold=0.05, min_area=300):
+        """Find if a contour is a square.
 
-    flag1 = shape.value_approximation(
-        square.get_angle_a(), RIGHT_ANGLE, value_threshold=angle_threshold)
-    flag2 = shape.value_approximation(
-        square.get_angle_b(), RIGHT_ANGLE, value_threshold=angle_threshold)
-    flag3 = shape.value_approximation(
-        square.get_angle_c(), RIGHT_ANGLE, value_threshold=angle_threshold)
-    flag4 = shape.value_approximation(
-        square.get_angle_d(), RIGHT_ANGLE, value_threshold=angle_threshold)
+        Rules:
+            1 - There must be four corners.
+            2 - All four lines must be the same length.
+            3 - All four corners must be 90°.
+            4 - AB and CD must be horizontal lines.
+            5 - AC and BC must be vertical lines.
+            6 - The contour must be concave.
 
-    if(flag1 and flag2 and flag3 and flag4):
-        return True
-    else:
-        return False
+        Args: 
+            contour (np.ndarray): OpenCV contour.
+            arc_threshold (float, optional): Contour arc threshold.
+            min_area (float, optional): Minimal area threshold.
 
+        Returns:
+            Square: Square object.
+        """
 
-def is_square(contour, arc_threshold=0.05, min_area=300):
-    """Find if a contour is a square.
+        perimeter = cv2.arcLength(contour, True)
+        approximation = cv2.approxPolyDP(
+            contour, arc_threshold*perimeter, True)
 
-    Rules:
-        1 - There must be four corners.
-        2 - All four lines must be the same length.
-        3 - All four corners must be 90°.
-        4 - AB and CD must be horizontal lines.
-        5 - AC and BC must be vertical lines.
-        6 - The contour must be concave.
+        rect = cv2.minAreaRect(approximation)
+        box = cv2.boxPoints(rect)
+        box = np.int0(box)
 
-    Args: 
-        contour (np.ndarray): OpenCV contour.
-        arc_threshold (float, optional): Contour arc threshold.
-        min_area (float, optional): Minimal area threshold.
+        if (len(approximation) != 4):
+            # Poligon has 4 courners
+            return False
+        if not size_approximation(approximation):
+            # Size Approximation
+            return False
+        if cv2.contourArea(approximation) < min_area:
+            # Min Area
+            return False
 
-    Returns:
-        Square: Square object.
-    """
+        # Sort corner of square
+        corners = [tuple(approximation[0][0]), tuple(approximation[1][0]),
+                   tuple(approximation[2][0]), tuple(approximation[3][0])]
+        corners.sort(key=lambda p: p[1])
 
-    perimeter = cv2.arcLength(contour, True)
-    approximation = cv2.approxPolyDP(contour, arc_threshold*perimeter, True)
+        top_points = corners[2:]
+        buttom_points = corners[:2]
 
-    rect = cv2.minAreaRect(approximation)
-    box = cv2.boxPoints(rect)
-    box = np.int0(box)
+        top_points.sort(key=lambda p: p[0])
+        buttom_points.sort(key=lambda p: p[0], reverse=True)
 
-    if (len(approximation) != 4):
-        # Poligon has 4 courners
-        return False
-    if not size_approximation(approximation):
-        # Size Approximation
-        return False
-    if cv2.contourArea(approximation) < min_area:
-        # Min Area
-        return False
+        corners = top_points + buttom_points
 
-    # Sort corner of square
-    corners = [tuple(approximation[0][0]), tuple(approximation[1][0]),
-               tuple(approximation[2][0]), tuple(approximation[3][0])]
-    corners.sort(key=lambda p: p[1])
+        point_a = shape.Point(corners[0][0], corners[0][1])
+        point_b = shape.Point(corners[1][0], corners[1][1])
+        point_c = shape.Point(corners[2][0], corners[2][1])
+        point_d = shape.Point(corners[3][0], corners[3][1])
 
-    top_points = corners[2:]
-    buttom_points = corners[:2]
+        square = Square(point_a, point_b, point_c, point_d, approximation)
 
-    top_points.sort(key=lambda p: p[0])
-    buttom_points.sort(key=lambda p: p[0], reverse=True)
+        # print("Corners:", corners)
+        # print("top", top_points)
+        # print("buttom", buttom_points)
+        # print("Square:", square)
 
-    corners = top_points + buttom_points
+        if not shape.value_approximation(square.get_line_ab(), square.get_line_cd(), value_threshold=0.20):
+            # Is Horizontal
+            return False
+        if not shape.value_approximation(square.get_line_ad(), square.get_line_bc(), value_threshold=0.20):
+            # Is Vertical
+            return False
+        if not line_approximation(square):
+            # Lines Same Length
+            return False
+        if not angle_approximation(square):
+            # Right Angle
+            return False
 
-    point_a = shape.Point(corners[0][0], corners[0][1])
-    point_b = shape.Point(corners[1][0], corners[1][1])
-    point_c = shape.Point(corners[2][0], corners[2][1])
-    point_d = shape.Point(corners[3][0], corners[3][1])
-
-    square = Square(point_a, point_b, point_c, point_d, approximation)
-
-    # print("Corners:", corners)
-    # print("top", top_points)
-    # print("buttom", buttom_points)
-    # print("Square:", square)
-
-    if not shape.value_approximation(square.get_line_ab(), square.get_line_cd(), value_threshold=0.20):
-        # Is Horizontal
-        return False
-    if not shape.value_approximation(square.get_line_ad(), square.get_line_bc(), value_threshold=0.20):
-        # Is Vertical
-        return False
-    if not line_approximation(square):
-        # Lines Same Length
-        return False
-    if not angle_approximation(square):
-        # Right Angle
-        return False
-
-    return square
+        return square
