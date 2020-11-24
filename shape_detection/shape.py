@@ -2,6 +2,7 @@ import math
 
 
 class Point(tuple):
+    """Extends 'tuple', Point represents a 2d position."""
     def __new__(cls, x: int, y: int):
         return tuple.__new__(cls, (x, y))
 
@@ -11,10 +12,12 @@ class Point(tuple):
 
     @property
     def x(self):
+        """X coordinate value."""
         return self._x
 
     @property
     def y(self):
+        """Y coordinate value."""
         return self._y
 
     def __str__(self):
@@ -22,10 +25,17 @@ class Point(tuple):
 
 
 def get_distance(point_a: Point, point_b: Point):
-    """
-    Get the distance between two points
-    Distance = sqrt ( (x1-x2)^2 + (y1-y2)^2 )
-    Source: https://www.mathsisfun.com/algebra/distance-2-points.html
+    """Get the distance between two points.
+
+    Args:
+        point_a (Point): start point.
+        point_b (Point): end point.
+
+    Returns:
+        float: Distance.
+
+    Notes: 
+        See https://www.mathsisfun.com/algebra/distance-2-points.html for more info.
     """
 
     distance = math.sqrt(
@@ -33,11 +43,18 @@ def get_distance(point_a: Point, point_b: Point):
     return distance
 
 
-def value_approximation(point_a, point_b, value_threshold):
+def value_approximation(value_a: float, value_b: float, value_threshold: float):
+    """Compare two numbers to check if they are roughly the same.
+
+    Args:
+        value_a (float): First number.
+        value_b (float): Second number.
+        value_threshold (float): Approximation threshold.
+
+    Returns: 
+        bool: Whether or not the numbers are the same.
     """
-    Compare two numbers to check if they are roughly the same
-    """
-    position = point_a/float(point_b)
+    position = value_a/float(value_b)
     flag = True if position >= (
         1-value_threshold) and position <= (1+value_threshold) else False
     return flag
