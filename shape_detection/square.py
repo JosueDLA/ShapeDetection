@@ -7,7 +7,15 @@ RIGHT_ANGLE = 90
 
 
 class Square:
+    """Four-sided poligon.\n
+    A______B  \r
+    |      |  \r
+    |      |  \r
+    D______C  \r
+    """
+
     def __init__(self, point_a: Point, point_b: Point, point_c: Point, point_d: Point, array: np.ndarray = []):
+        """Square formed by four given points."""
         self.point_a = point_a
         self.point_b = point_b
         self.point_c = point_c
@@ -18,34 +26,49 @@ class Square:
         return (f"{self.point_a} {self.point_b} {self.point_c} {self.point_d}")
 
     def get_angle_a(self):
+        """Angle A°."""
         return get_angle(self.point_a, self.point_b, self.point_d)
 
     def get_angle_b(self):
+        """Angle B°."""
         return get_angle(self.point_b, self.point_c, self.point_a)
 
     def get_angle_c(self):
+        """Angle C°."""
         return get_angle(self.point_c, self.point_d, self.point_b)
 
     def get_angle_d(self):
+        """Angle D°."""
         return get_angle(self.point_d, self.point_a, self.point_c)
 
     def get_line_ab(self):
+        """Line AB length."""
         return shape.get_distance(self.point_a, self.point_b)
 
     def get_line_bc(self):
+        """Line BC length."""
         return shape.get_distance(self.point_b, self.point_c)
 
     def get_line_cd(self):
+        """Line CD length."""
         return shape.get_distance(self.point_c, self.point_d)
 
     def get_line_ad(self):
+        """Line AD length."""
         return shape.get_distance(self.point_a, self.point_d)
 
 
 def size_approximation(contour, box_threshold=0.40):
-    """
-    Compare the size of a bound contour to the contour
-    Source: https://www.pyimagesearch.com/2016/02/08/opencv-shape-detection/
+    """Compare the size of a bound contour to the contour.
+
+    Args:
+        contour (np.ndarray): OpenCV contour.
+        box_threshold (float, optional): Approximation threshold. 
+
+    Returns: 
+        bool: Whether or not the contours are the same size.
+
+    Notes: See https://www.pyimagesearch.com/2016/02/08/opencv-shape-detection/ for  more info.
     """
     (_, _, w, h) = cv2.boundingRect(contour)
     area = w / float(h)
@@ -54,9 +77,15 @@ def size_approximation(contour, box_threshold=0.40):
     return flag
 
 
-def line_approximation(square, line_threshold=0.30):
-    """
-    Compare the size of 4 lines to check if they are the same length
+def line_approximation(square: Square, line_threshold: float = 0.30):
+    """Compare the size of 4 lines to check if they are the same length.
+
+    Args:
+        square (Square): Square object.
+        line_threshold (float, optional): Approximation threshold. 
+
+    Returns:
+        bool: Whether or not the lines are the same length.
     """
 
     average = (square.get_line_ab() + square.get_line_bc() +
@@ -77,9 +106,15 @@ def line_approximation(square, line_threshold=0.30):
         return False
 
 
-def angle_approximation(square, angle_threshold=0.20):
-    """
-    Get the four angles of a square and check if they are roughly the same
+def angle_approximation(square: Square, angle_threshold: float = 0.20):
+    """ Get the four angles of a square and check if they are roughly the same.
+
+    Args:
+        square (Square): Square object.
+        angle_threshold (float, optional): Approximation threshold. 
+
+    Returns:
+        bool: Whether or not the angles are the same.
     """
 
     flag1 = shape.value_approximation(
@@ -98,20 +133,23 @@ def angle_approximation(square, angle_threshold=0.20):
 
 
 def is_square(contour, arc_threshold=0.05, min_area=300):
-    """
-    Find if a contour is a square
-    Rules:
-    1 - There must be four corners
-    2 - All four lines must be the same length
-    3 - All four corners must be 90°
-    4 - AB and CD must be horizontal lines
-    5 - AC and BC must be vertical lines
-    6 - The contour must be concave
+    """Find if a contour is a square.
 
-    A______B
-    |      |
-    |      |
-    D______C
+    Rules:
+        1 - There must be four corners.
+        2 - All four lines must be the same length.
+        3 - All four corners must be 90°.
+        4 - AB and CD must be horizontal lines.
+        5 - AC and BC must be vertical lines.
+        6 - The contour must be concave.
+
+    Args: 
+        contour (np.ndarray): OpenCV contour.
+        arc_threshold (float, optional): Contour arc threshold.
+        min_area (float, optional): Minimal area threshold.
+
+    Returns:
+        Square: Square object.
     """
 
     perimeter = cv2.arcLength(contour, True)
