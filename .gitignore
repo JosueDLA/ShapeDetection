@@ -2,15 +2,3 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
-# Test Folder
-test
-
-# Video Folder / Files
-video
-*.mp4
-*.avi
-
-
-# Image Folder
-image
