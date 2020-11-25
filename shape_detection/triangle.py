@@ -24,41 +24,41 @@ class Triangle:
         self.point_b = point_b
         self.point_c = point_c
 
-    def __str__(self):
+    def __str__(self) -> str:
         return (f"{self.point_a} {self.point_b} {self.point_c}")
 
     @property
-    def angle_a(self):
+    def angle_a(self) -> float:
         """Angle A° (alpha)."""
         return self.get_angle(self.point_a, self.point_b, self.point_c)
 
     @property
-    def angle_b(self):
+    def angle_b(self) -> float:
         """Angle B° (beta)."""
         return self.get_angle(self.point_b, self.point_c, self.point_a)
 
     @property
-    def angle_c(self):
+    def angle_c(self) -> float:
         """Angle C° (gama)."""
         return self.get_angle(self.point_c, self.point_a, self.point_b)
 
     @property
-    def side_a(self):
+    def side_a(self) -> float:
         """Line a length"""
         return get_distance(self.point_b, self.point_c)
 
     @property
-    def side_b(self):
+    def side_b(self) -> float:
         """Line b length"""
         return get_distance(self.point_a, self.point_c)
 
     @property
-    def side_c(self):
+    def side_c(self) -> float:
         """Line c length"""
         return get_distance(self.point_a, self.point_b)
 
     @staticmethod
-    def get_angle(point_a: Point, point_b: Point, point_c: Point):
+    def get_angle(point_a: Point, point_b: Point, point_c: Point) -> float:
         """Get the angle between three points.
 
         cos(A°) = (b^2 + c^2 - a^2) / 2bc
