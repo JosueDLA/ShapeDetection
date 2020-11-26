@@ -1,6 +1,6 @@
 # Shape detection with OpenCV
 
-Shape detection using OpenCV 
+Shape detection using OpenCV
 
 ## Overview
 
@@ -16,6 +16,12 @@ We will skip the canny edge detection because the [CVTools](https://github.com/J
 - The contour must be concave
 
 ## Instalation
+
+Install this package
+
+```bash
+pip install shape-detection-jdla
+```
 
 Clone this repository
 
