@@ -49,7 +49,7 @@ from setuptools import setup
 
 setup(
     name="shape-detection-jdla",
-    version="0.0.2",
+    version="0.0.3",
     py_modules=["shape_detection"],
     description="Shape detection using OpenCV",
     long_description_content_type="text/markdown",
@@ -60,8 +60,8 @@ setup(
     license='MIT',
     packages=find_packages(),
     install_requires=[
-        "numpy==1.21.4",
-        "opencv-python==4.5.4.60",
+        "numpy==1.22.3",
+        "opencv-python==4.5.5.64",
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
